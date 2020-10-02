@@ -10,7 +10,14 @@ class Story {
    *   - {title, author, url, username, storyId, createdAt}
    */
 
-  constructor({ title, author, url, username, storyId, createdAt }) {
+  constructor({
+    title,
+    author,
+    url,
+    username,
+    storyId,
+    createdAt
+  }) {
     this.author = author;
     this.title = title;
     this.url = url;
@@ -57,8 +64,8 @@ class StoryList {
       url: `${BASE_URL}/stories`,
       method: "GET",
     });
-      
-    console.log("Response is" , response)
+
+    console.log("Response is", response)
     // turn plain old story objects from API into instances of Story class
     const stories = response.data.stories.map(story => new Story(story));
 
@@ -73,13 +80,24 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory( user, {title, author, url}) {
-    const results =  await axios({
+  async addStory(currentUser, {
+    title,
+    author,
+    url
+  }) {
+    const results = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
-      data: { token : user.loginToken , story : {title, author, url}}
+      data: {
+        token: currentUser.loginToken,
+        story: {
+          title,
+          author,
+          url
+        }
+      }
     })
-     console.log("data " , results.data.story)
+    console.log("data ", results.data.story)
     let newStory = new Story(results.data.story);
     this.stories.unshift(newStory);
     return newStory;
@@ -99,13 +117,13 @@ class User {
    */
 
   constructor({
-                username,
-                name,
-                createdAt,
-                favorites = [],
-                ownStories = []
-              },
-              token) {
+      username,
+      name,
+      createdAt,
+      favorites = [],
+      ownStories = []
+    },
+    token) {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;
@@ -129,7 +147,13 @@ class User {
     const response = await axios({
       url: `${BASE_URL}/signup`,
       method: "POST",
-      data: { user: { username, password, name } },
+      data: {
+        user: {
+          username,
+          password,
+          name
+        }
+      },
     });
 
     return new User(response.data.user, response.data.token);
@@ -145,7 +169,12 @@ class User {
     const response = await axios({
       url: `${BASE_URL}/login`,
       method: "POST",
-      data: { user: { username, password } },
+      data: {
+        user: {
+          username,
+          password
+        }
+      },
     });
 
     return new User(response.data.user, response.data.token);
@@ -160,7 +189,9 @@ class User {
       const response = await axios({
         url: `${BASE_URL}/users/${username}`,
         method: "GET",
-        params: { token },
+        params: {
+          token 
+        },
       });
       return new User(response.data.user, token);
     } catch (err) {
@@ -168,4 +199,24 @@ class User {
       return null;
     }
   }
+
+
+
+  async addFavoriteStory(storyId) {
+    console.log(`addFavoritestory1`)
+
+    const response = await axios({
+      url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
+      method: "POST",
+      params: {
+        token : currentUser.loginToken 
+      },
+    })
+    console.log(`addfavoritestory`, response)
+  }
+
+  async removeFavoriteStory() {}
+
 }
+
+// link star button, so when star is clicked  

@@ -14,7 +14,6 @@ const $navLogOut = $("#nav-logout");
 
 const $userNavLink = $(".main-nav-links");
 const $submitNewStoryForm = $("#submit-form")
-
 const $submitlink = $("#nav-submit-story");
 
 /** To make it easier for individual components to show just themselves, this

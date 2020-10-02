@@ -1,13 +1,16 @@
 // This is the global list of the stories, an instance of StoryList
 let storyList;
 let $storySubmitForm = $("#submit-form");
+// let $myStories = ("nav-my-stories")
+
+
+
 
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
-
   putStoriesOnPage();
 }
 
@@ -18,12 +21,14 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
+
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
   return $(`
-      <li id="${story.storyId}">
+      <li id="${story.storyId}" class="fave-star">
+      <i class="far fa-star"></i>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -55,12 +60,21 @@ $storySubmitForm.on("submit" , async function (evt){
   let createAuthor = $(evt.target).find("#create-author").val();
   let createTitle = $(evt.target).find("#create-title").val();
   let createUrl =$(evt.target).find("#create-url").val();
-  let newStory = await storyList.addStory(currentUser,{title : createTitle, author : createAuthor, url: createUrl});
+  let newStory = await storyList.addStory(currentUser, {title : createTitle, author : createAuthor, url: createUrl});
   const $story = generateStoryMarkup(newStory);
   $allStoriesList.prepend($story);
   $storySubmitForm.trigger("reset");
   // $storySubmitForm.hide();
 })
+
+
+$allStoriesList.on("click", ".fave-star", function (evt){
+  evt.preventDefault();
+  // console.log(`evt target star`, $(evt.target).parent().attr("id"))
+  let storyId = $(evt.target).parent().attr("id");
+  currentUser.addFavoriteStory(storyId);
+})
+
 
 
 
