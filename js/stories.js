@@ -58,6 +58,7 @@ $storySubmitForm.on("submit" , async function (evt){
   let newStory = await storyList.addStory(currentUser,{title : createTitle, author : createAuthor, url: createUrl});
   const $story = generateStoryMarkup(newStory);
   $allStoriesList.prepend($story);
+  
 })
 
 
